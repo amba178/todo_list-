@@ -1,0 +1,39 @@
+%section#todoapp{"ng-controller" => "MainCtrl"}
+  %ng-view
+  %header#header
+    %h1 todos
+    %form#todo-form{"ng-submit" => "save(activeTodo)"}
+      %input#new-todo{:autofocus => "", "ng-model" => "activeTodo.title", 
+                 :placeholder => "What needs to be done?"}
+  %section#main{"ng-cloak" => "", "ng-show" => "todos.length"}
+    %input#toggle-all{"ng-click" => "checkAll(checked)", 
+                    "ng-model" => "checked", :type => "checkbox"}
+      %label{:for => "toggle-all"} Mark all as complete
+      %ul#todo-list
+        %li{"ng-class" => "{completed: todo.completed, editing: todo == editedTodo}", 
+            "ng-repeat" => "todo in todos | filter:statusFilter track by $index"}
+          .view
+            %input.toggle{"ng-click" => "checkAndSave(todo)", "ng-model" => "todo.completed", :type => "checkbox"}
+              %label{"ng-dblclick" => "edit(todo)"} {{todo.title}}
+              %button.destroy{"ng-click" => "remove(todo)"}
+  %footer#footer{"ng-cloak" => "", "ng-show" => "todos.length"}
+    %span#todo-count
+      %strong {{remainingCount}}
+      %ng-pluralize{:count => "remainingCount", :when => "{ one: 'item left', other: 'items left' }"}
+    %ul#filters
+      %li
+        %a{:href => "#/", "ng-class" => "{selected: status == ''} "} All
+      %li
+        %a{:href => "#/active", "ng-class" => "{selected: status == 'active'}"} Active
+      %li
+        %a{:href => "#/completed", "ng-class" => "{selected: status == 'completed'}"} Completed
+    %button#clear-completed{"ng-click" => "clearCompletedTodos()", "ng-show" => "completedCount"} Clear completed ({{completedCount}})
+  %footer#info
+    %p Double-click to edit a todo
+    %p
+      Credits:
+      = succeed "," do
+        %a{:href => "http://twitter.com/brettcassette"} Brett Cassette
+    %p
+      Part of
+      %a{:href => "http://todomvc.com"} TodoMVC
